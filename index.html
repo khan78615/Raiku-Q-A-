@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raiku Q&A Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            color: #6a11cb;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .input-section, .qa-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #2575fc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6a11cb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #6a11cb;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .qa-list {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .qa-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #6a11cb;
+            transition: transform 0.3s;
+        }
+
+        .qa-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .question {
+            font-weight: 700;
+            color: #2575fc;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .answer {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .delete-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .no-qa {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Color variations for Q&A items */
+        .qa-item:nth-child(4n+1) {
+            border-left-color: #6a11cb;
+        }
+
+        .qa-item:nth-child(4n+2) {
+            border-left-color: #2575fc;
+        }
+
+        .qa-item:nth-child(4n+3) {
+            border-left-color: #11cbd6;
+        }
+
+        .qa-item:nth-child(4n+4) {
+            border-left-color: #ff416c;
+        }
+
+        /* Scrollbar styling */
+        .qa-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .qa-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .qa-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #6a11cb, #2575fc);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Raiku Q&A Tool</h1>
+            <p class="subtitle">Add and manage your questions and answers about Raiku</p>
+        </header>
+
+        <div class="content">
+            <section class="input-section">
+                <h2>Add New Q&A</h2>
+                <form id="qa-form">
+                    <div class="form-group">
+                        <label for="question">Question:</label>
+                        <input type="text" id="question" placeholder="Enter your question" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="answer">Answer:</label>
+                        <textarea id="answer" placeholder="Enter the answer" required></textarea>
+                    </div>
+                    <button type="submit">Add Q&A</button>
+                </form>
+            </section>
+
+            <section class="qa-section">
+                <h2>Questions & Answers</h2>
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="Search questions...">
+                </div>
+                <div class="qa-list" id="qa-list">
+                    <!-- Q&A items will be added here dynamically -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Predefined Q&A data
+        const predefinedQA = [
+            {
+                question: "What is Raiku, and what does it do for Solana?",
+                answer: "Raiku is a Coordination Layer for the Solana blockchain. It enhances Solana's high-speed transactions by making them more reliable. It offers guaranteed block inclusion (ensuring transactions don't fail), pre-confirmations (<50ms), and predictable blockspace. It's optimized for high-demand use cases like DeFi, AI agents, gaming, and high-frequency trading (HFT)."
+            },
+            {
+                question: "When is Raiku launching?",
+                answer: "Raiku's Testnet (Alphanet) is currently live, expanding across Europe, Asia, and North America. The Mainnet is expected to launch in 2026."
+            },
+            {
+                question: "How much funding has Raiku raised, and who are its investors?",
+                answer: "Raiku raised $13.5 million in Seed and Pre-Seed rounds. Investors include Pantera Capital, Jump Crypto, Lightspeed Faction, Figment Capital, and Big Brain Holdings. Solana co-founder Anatoly Yakovenko is also an angel investor."
+            },
+            {
+                question: "How is Raiku different from Solana's Jito or Firedancer?",
+                answer: "Unlike Jito (focused on MEV) or Firedancer (a validator client), Raiku is a Coordination Layer that ensures guaranteed and predictable transactions without creating an L2 chain. It strengthens Solana's L1, especially for institutional use cases."
+            },
+            {
+                question: "What are Raiku's key features?",
+                answer: "Raiku's main features: Guaranteed Block Inclusion: Ensures transactions are included in a block. Fast Pre-Confirmations: <50ms pre-confirmation time. Predictable Blockspace: Reserve blockspace in advance. High-Performance: Optimized for AI agents, DePIN, HFT, and gaming. Fully integrated with Solana L1, no bridges or new chains needed."
+            },
+            {
+                question: "How can I join the Raiku community?",
+                answer: "You can join the Raiku community via: Website: raiku.com Docs: docs.raiku.com Discord: discord.gg/raikucom – Join for OG roles. GitHub: Developers can contribute by connecting on GitHub."
+            },
+            {
+                question: "How can I join Raiku's Testnet?",
+                answer: "Raiku's Alphanet Testnet is live. To join: Visit docs.raiku.com and check the Testnet section. Join the Discord community and follow Testnet instructions. Developers can access SDKs and tools via GitHub."
+            },
+            {
+                question: "Does Raiku have a token?",
+                answer: "There's no official announcement about a Raiku token yet. The project is in the Testnet phase, and token details may come closer to the Mainnet launch. Follow Discord or X for updates."
+            },
+            {
+                question: "Why is Raiku important for Solana?",
+                answer: "Solana is fast but can see 40-95% transaction failures under high load. Raiku solves this by ensuring reliability, making Solana suitable for institutional users (e.g., financial markets) and high-demand use cases like DeFi, gaming, and AI."
+            },
+            {
+                question: "What are Raiku's next steps?",
+                answer: "Raiku's next steps: Expanding Alphanet Testnet (Europe, Asia, North America). Mainnet launch (expected 2026). Improving developer tools and SDKs. Community building through OG roles, GitHub contributions, and the #RaikuInevitable campaign on X."
+            }
+        ];
+
+        // DOM elements
+        const qaForm = document.getElementById('qa-form');
+        const questionInput = document.getElementById('question');
+        const answerInput = document.getElementById('answer');
+        const qaList = document.getElementById('qa-list');
+        const searchInput = document.getElementById('search');
+
+        // Initialize with predefined Q&A
+        let qaData = [...predefinedQA];
+
+        // Render Q&A list
+        function renderQAList(data = qaData) {
+            qaList.innerHTML = '';
+            
+            if (data.length === 0) {
+                qaList.innerHTML = '<div class="no-qa">No questions found. Add some using the form!</div>';
+                return;
+            }
+            
+            data.forEach((item, index) => {
+                const qaItem = document.createElement('div');
+                qaItem.className = 'qa-item';
+                qaItem.innerHTML = `
+                    <div class="question">${item.question}</div>
+                    <div class="answer">${item.answer}</div>
+                    <div class="actions">
+                        <button class="delete-btn" data-index="${index}">Delete</button>
+                    </div>
+                `;
+                qaList.appendChild(qaItem);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteQA(index);
+                });
+            });
+        }
+
+        // Add new Q&A
+        function addQA(question, answer) {
+            qaData.push({ question, answer });
+            renderQAList();
+            // Clear form
+            questionInput.value = '';
+            answerInput.value = '';
+        }
+
+        // Delete Q&A
+        function deleteQA(index) {
+            qaData.splice(index, 1);
+            renderQAList();
+        }
+
+        // Search functionality
+        function searchQA(query) {
+            const filteredData = qaData.filter(item => 
+                item.question.toLowerCase().includes(query.toLowerCase()) ||
+                item.answer.toLowerCase().includes(query.toLowerCase())
+            );
+            renderQAList(filteredData);
+        }
+
+        // Event listeners
+        qaForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const question = questionInput.value.trim();
+            const answer = answerInput.value.trim();
+            
+            if (question && answer) {
+                addQA(question, answer);
+            }
+        });
+
+        searchInput.addEventListener('input', function() {
+            searchQA(this.value);
+        });
+
+        // Initial render
+        renderQAList();
+    </script>
+</body>
+</html>
