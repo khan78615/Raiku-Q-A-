@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raiku Q&A Tool</title>
+    <title>Raiku Q&A Display</title>
     <style>
         * {
             margin: 0;
@@ -27,7 +27,7 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 30px;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -36,137 +36,112 @@
         h1 {
             color: #2575fc;
             margin-bottom: 10px;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .subtitle {
             color: #6a11cb;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin-bottom: 20px;
         }
 
-        .content {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
+        .description {
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
-        .input-section, .qa-section {
-            flex: 1;
-            min-width: 300px;
+        .qa-section {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
-            padding: 25px;
+            padding: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
         }
 
         h2 {
             color: #2575fc;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #6a11cb;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #6a11cb;
+            text-align: center;
+            font-size: 2rem;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .search-box {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #6a11cb;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
+        #search {
+            width: 70%;
+            padding: 15px;
             border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border 0.3s;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
-        input:focus, textarea:focus {
+        #search:focus {
             border-color: #6a11cb;
             outline: none;
-        }
-
-        textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-        button {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.2);
         }
 
         .qa-list {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 25px;
         }
 
         .qa-item {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 15px;
+            padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #6a11cb;
-            transition: transform 0.3s;
+            border-left: 8px solid #6a11cb;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
         .qa-item:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
         }
 
         .question {
             font-weight: 700;
             color: #2575fc;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            line-height: 1.4;
         }
 
         .answer {
             color: #555;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 1.05rem;
         }
 
-        .actions {
+        .qa-number {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #6a11cb;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-        }
-
-        .delete-btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            padding: 8px 15px;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
             font-size: 0.9rem;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .no-qa {
-            text-align: center;
-            color: #888;
-            padding: 20px;
-            font-style: italic;
         }
 
         /* Color variations for Q&A items */
@@ -186,28 +161,60 @@
             border-left-color: #ff416c;
         }
 
-        /* Scrollbar styling */
-        .qa-list::-webkit-scrollbar {
-            width: 8px;
+        .qa-item:nth-child(4n+1) .qa-number {
+            background: #6a11cb;
         }
 
-        .qa-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        .qa-item:nth-child(4n+2) .qa-number {
+            background: #2575fc;
         }
 
-        .qa-list::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #6a11cb, #2575fc);
-            border-radius: 10px;
+        .qa-item:nth-child(4n+3) .qa-number {
+            background: #11cbd6;
+        }
+
+        .qa-item:nth-child(4n+4) .qa-number {
+            background: #ff416c;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-style: italic;
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 1rem;
         }
 
         @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
+            .qa-list {
+                grid-template-columns: 1fr;
             }
             
             h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
+            }
+            
+            #search {
+                width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .qa-item {
+                padding: 20px;
             }
         }
     </style>
@@ -215,36 +222,24 @@
 <body>
     <div class="container">
         <header>
-            <h1>Raiku Q&A Tool</h1>
-            <p class="subtitle">Add and manage your questions and answers about Raiku</p>
+            <h1>Raiku Q&A Display</h1>
+            <p class="subtitle">Everything you need to know about Raiku and Solana</p>
+            <p class="description">This tool provides detailed information about Raiku, a Coordination Layer for Solana that enhances transaction reliability with guaranteed block inclusion, fast pre-confirmations, and predictable blockspace.</p>
         </header>
 
-        <div class="content">
-            <section class="input-section">
-                <h2>Add New Q&A</h2>
-                <form id="qa-form">
-                    <div class="form-group">
-                        <label for="question">Question:</label>
-                        <input type="text" id="question" placeholder="Enter your question" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="answer">Answer:</label>
-                        <textarea id="answer" placeholder="Enter the answer" required></textarea>
-                    </div>
-                    <button type="submit">Add Q&A</button>
-                </form>
-            </section>
+        <section class="qa-section">
+            <h2>Frequently Asked Questions</h2>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Search questions or answers...">
+            </div>
+            <div class="qa-list" id="qa-list">
+                <!-- Q&A items will be added here dynamically -->
+            </div>
+        </section>
 
-            <section class="qa-section">
-                <h2>Questions & Answers</h2>
-                <div class="search-box">
-                    <input type="text" id="search" placeholder="Search questions...">
-                </div>
-                <div class="qa-list" id="qa-list">
-                    <!-- Q&A items will be added here dynamically -->
-                </div>
-            </section>
-        </div>
+        <footer>
+            <p>Raiku Q&A Display Tool | Designed for the Solana Community</p>
+        </footer>
     </div>
 
     <script>
@@ -293,21 +288,15 @@
         ];
 
         // DOM elements
-        const qaForm = document.getElementById('qa-form');
-        const questionInput = document.getElementById('question');
-        const answerInput = document.getElementById('answer');
         const qaList = document.getElementById('qa-list');
         const searchInput = document.getElementById('search');
 
-        // Initialize with predefined Q&A
-        let qaData = [...predefinedQA];
-
         // Render Q&A list
-        function renderQAList(data = qaData) {
+        function renderQAList(data = predefinedQA) {
             qaList.innerHTML = '';
             
             if (data.length === 0) {
-                qaList.innerHTML = '<div class="no-qa">No questions found. Add some using the form!</div>';
+                qaList.innerHTML = '<div class="no-results">No matching questions found. Try a different search term.</div>';
                 return;
             }
             
@@ -315,42 +304,17 @@
                 const qaItem = document.createElement('div');
                 qaItem.className = 'qa-item';
                 qaItem.innerHTML = `
+                    <div class="qa-number">${index + 1}</div>
                     <div class="question">${item.question}</div>
                     <div class="answer">${item.answer}</div>
-                    <div class="actions">
-                        <button class="delete-btn" data-index="${index}">Delete</button>
-                    </div>
                 `;
                 qaList.appendChild(qaItem);
             });
-            
-            // Add event listeners to delete buttons
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    deleteQA(index);
-                });
-            });
-        }
-
-        // Add new Q&A
-        function addQA(question, answer) {
-            qaData.push({ question, answer });
-            renderQAList();
-            // Clear form
-            questionInput.value = '';
-            answerInput.value = '';
-        }
-
-        // Delete Q&A
-        function deleteQA(index) {
-            qaData.splice(index, 1);
-            renderQAList();
         }
 
         // Search functionality
         function searchQA(query) {
-            const filteredData = qaData.filter(item => 
+            const filteredData = predefinedQA.filter(item => 
                 item.question.toLowerCase().includes(query.toLowerCase()) ||
                 item.answer.toLowerCase().includes(query.toLowerCase())
             );
@@ -358,16 +322,6 @@
         }
 
         // Event listeners
-        qaForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const question = questionInput.value.trim();
-            const answer = answerInput.value.trim();
-            
-            if (question && answer) {
-                addQA(question, answer);
-            }
-        });
-
         searchInput.addEventListener('input', function() {
             searchQA(this.value);
         });
